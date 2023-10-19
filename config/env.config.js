@@ -3,6 +3,8 @@ require('dotenv').config();
 
 const { logger } = require('../helpers');
 
+const projectName = process.env.NODE_ENV === 'development' ? process.env.PROJECT_NAME : '';
+
 const envschema = Joi.object({
   PROJECT_NAME: Joi.string().trim().required(),
   NODE_ENV: Joi.string().trim().required(),
@@ -10,10 +12,10 @@ const envschema = Joi.object({
   PORT: Joi.number().required(),
 
   JSON_BODY_LIMIT: Joi.string().trim().required(),
-  
+
   MONGODB_URI: Joi.string().trim().required(),
-  BASE_URL: Joi.string().trim().default(`/${process.env.NODE_ENV === 'development' ? `${process.env.PROJECT_NAME}/` : ''}api/v1`),
-  
+  BASE_URL: Joi.string().trim().default(`/${projectName}/api/v1`),
+
   JWT_SECRET: Joi.string().trim().required(),
   JWT_EXPIRES_IN: Joi.string().trim().required().custom((value, helpers) => {
     //! return value in seconds [number]
@@ -24,12 +26,12 @@ const envschema = Joi.object({
     if (value.includes('s')) return +value.replace('s', '');
     return helpers.error('any.invalid');
   }, 'custom validation'),
-  
+
   EMAIL_USER: Joi.string().trim().required(),
   EMAIL_PASSWORD: Joi.string().trim().required(),
   EMAIL_HOST: Joi.string().trim().required(),
   EMAIL_PORT: Joi.number().required(),
-  
+
   ACCESSKEYID: Joi.string().trim(),
   SECRET_KEY: Joi.string().trim(),
   REGION: Joi.string().trim(),
